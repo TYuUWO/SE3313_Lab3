@@ -29,6 +29,7 @@ int main(void)
 	
 	//main program loop
 	while(inputData!="done" && socketCreated){
+		std::cout << "Please enter a string" << std::endl;
 		std::cin >> inputData;
 	
 		//convert inputData to ByteArray data
@@ -39,7 +40,7 @@ int main(void)
 		socket.Read(data);
 		
 		//end server connection and exit based on server reply
-		if (data.ToString() == "exit" || stoi(data.ToString()) == -1){
+		if (data.ToString() == "exit"){
 			cout << "Server connection terminated" <<endl;
 			break;
 		}
