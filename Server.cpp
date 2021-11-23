@@ -9,6 +9,7 @@
 #include <string>
 #include <unistd.h>
 #include <iostream>
+#include <algorithm>
 
 using namespace Sync;
 using namespace std;
@@ -20,6 +21,7 @@ class ServerThread : public Thread
 {
 private:
     SocketServer& server;
+    ByteArray data;
 public:
     ServerThread(SocketServer& server)
     : server(server)
@@ -40,9 +42,18 @@ public:
         Socket& socketReference = *newConnection;
 	//You can use this to read data from socket and write data to socket. You may want to put this read/write somewhere else. You may use ByteArray
 	// Wait for data
-        //socketReference.Read(data);
+        int request = socketReference.Read(data);
+        
+        //Convert it to a string and capitalize the string
+        string str = data.ToString();
+        transform(str.begin(), str.end(), str.begin(), ::toupper);
+        
+        //Convert it back to a ByteArray type
+        ByteArray response = ByteArray(str);
+        
         // Send it back
-        //socketReference.Write(data);
+        socketReference.Write(response);
+        
 	return 1;
     }
 };
@@ -58,7 +69,6 @@ int threadTask(int data) {
 
 int main(void)
 {
-
 	string sData;
 	string response;
 	int n = 0;
