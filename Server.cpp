@@ -34,10 +34,10 @@ public:
     virtual long ThreadMain()
     {
         // Wait for a client socket connection
-        //Socket* newConnection = new Socket(server.Accept());
+        Socket* newConnection = new Socket(server.Accept());
 
         // A reference to this pointer 
-        //Socket& socketReference = *newConnection;
+        Socket& socketReference = *newConnection;
 	//You can use this to read data from socket and write data to socket. You may want to put this read/write somewhere else. You may use ByteArray
 	// Wait for data
         //socketReference.Read(data);
@@ -67,14 +67,14 @@ int main(void)
     std::cout << "I am a server." << std::endl;
 	sData = "Hello from server.";
     // Create our server
-    //SocketServer server(3000);    
+    SocketServer server(3000);    
 
     // Need a thread to perform server operations
-    //ServerThread serverThread(server);
+    ServerThread serverThread(server);
 	
     // This will wait for input to shutdown the server
-    //FlexWait cinWaiter(1, stdin);
-    //cinWaiter.Wait();
+    FlexWait cinWaiter(1, stdin);
+    cinWaiter.Wait();
     
     while (typeYes) {
     		n++;
@@ -89,6 +89,6 @@ int main(void)
 		th.join();
 	}
     // Shut down and clean up the server
-    //server.Shutdown();
+    server.Shutdown();
 
 }
