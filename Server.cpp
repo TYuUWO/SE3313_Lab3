@@ -22,6 +22,7 @@ class ServerThread : public Thread
 private:
     SocketServer& server;
     ByteArray data;
+    std::vector<std::thread> threads;
 public:
     ServerThread(SocketServer& server)
     : server(server)
@@ -31,6 +32,8 @@ public:
     {
         // Cleanup
 	//...
+	cout << "This one";
+	server.Shutdown();
     }
 
     virtual long ThreadMain()
@@ -42,8 +45,9 @@ public:
         Socket& socketReference = *newConnection;
 	//You can use this to read data from socket and write data to socket. You may want to put this read/write somewhere else. You may use ByteArray
 	// Wait for data
+	do {
         socketReference.Read(data);
-        
+
         //Convert it to a string and capitalize the string
         string str = data.ToString();
         transform(str.begin(), str.end(), str.begin(), ::toupper);
@@ -53,7 +57,8 @@ public:
         
         // Send it back
         socketReference.Write(response);
-        
+        }
+        while (data.ToString() !="done");
 	return 1;
     }
 };
