@@ -42,7 +42,7 @@ public:
         Socket& socketReference = *newConnection;
 	//You can use this to read data from socket and write data to socket. You may want to put this read/write somewhere else. You may use ByteArray
 	// Wait for data
-        int request = socketReference.Read(data);
+        socketReference.Read(data);
         
         //Convert it to a string and capitalize the string
         string str = data.ToString();
