@@ -86,18 +86,6 @@ int main(void)
     FlexWait cinWaiter(1, stdin);
     cinWaiter.Wait();
     
-    while (typeYes) {
-    		n++;
-		std::cout << "Do you want to make a new thread? (type \"yes\" to continue writing)" << std::endl;
-		cin >> response;
-		typeYes = (response == "yes");
-		if (typeYes){
-			threads.push_back(thread(threadTask, n));
-		}
-	}
-	for (thread &th : threads){
-		th.join();
-	}
     // Shut down and clean up the server
     server.Shutdown();
 

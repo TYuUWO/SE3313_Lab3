@@ -30,7 +30,7 @@ int main(void)
 	//main program loop
 	while(inputData!="done" && socketCreated){
 		std::cout << "Please enter a string" << std::endl;
-		std::cin >> inputData;
+		getline(cin,inputData);
 	
 		//convert inputData to ByteArray data
 		ByteArray data(inputData);
