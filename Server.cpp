@@ -9,44 +9,34 @@
 #include <string>
 #include <unistd.h>
 #include <iostream>
-#include <algorithm>
 
 using namespace Sync;
 using namespace std;
 namespace{
 	volatile bool typeYes = true;
 }
-// This thread handles the server operations
-class ServerThread : public Thread
+
+class ClientThread : public Thread
 {
 private:
-    SocketServer& server;
+    Socket& socket;
     ByteArray data;
-    std::vector<std::thread> threads;
+
 public:
-    ServerThread(SocketServer& server)
-    : server(server)
+    ClientThread(Socket& socket)
+    : socket(socket)
     {}
-
-    ~ServerThread()
+    
+    Socket& GetSocket()
     {
-        // Cleanup
-	//...
-	cout << "This one";
-	server.Shutdown();
+    	return socket;
     }
-
+    
     virtual long ThreadMain()
     {
-        // Wait for a client socket connection
-        Socket* newConnection = new Socket(server.Accept());
-
-        // A reference to this pointer 
-        Socket& socketReference = *newConnection;
-	//You can use this to read data from socket and write data to socket. You may want to put this read/write somewhere else. You may use ByteArray
 	// Wait for data
 	do {
-        socketReference.Read(data);
+        socket.Read(data);
 
         //Convert it to a string and capitalize the string
         string str = data.ToString();
@@ -56,21 +46,50 @@ public:
         ByteArray response = ByteArray(str);
         
         // Send it back
-        socketReference.Write(response);
+        socket.Write(response);
         }
         while (data.ToString() !="done");
 	return 1;
     }
 };
+    
+// This thread handles the server operations
+class ServerThread : public Thread
+{
+private:
+    SocketServer& server;
+    ByteArray data;
+    vector<ClientThread *> threads;
+public:
+    ServerThread(SocketServer& server)
+    : server(server)
+    {}
 
-
-int threadTask(int data) {
-	while(typeYes){
-	cout << "Thread: " << data << endl;
-	sleep(5);
+    ~ServerThread()
+    {
+        // Cleanup
+	//...
+	for(int i = 0; i<threads.size(); i++){
+		Socket& terminate = threads[i]->GetSocket();
+		terminate.Close();
 	}
-	return 0;
-}
+    }
+
+    virtual long ThreadMain()
+    {
+    while(true){
+        // Wait for a client socket connection
+        Socket* newConnection = new Socket(server.Accept());
+
+        // A reference to this pointer 
+        Socket& socketReference = *newConnection;
+	//You can use this to read data from socket and write data to socket. You may want to put this read/write somewhere else. You may use ByteArray
+	ClientThread* clientThread = new ClientThread(socketReference);
+	
+	}
+	return 1;
+    }
+};
 
 int main(void)
 {
