@@ -98,11 +98,14 @@ int main(void)
 	int n = 0;
 	
     std::vector<std::thread> threads;
+	
     std::cout << "I am a server." << std::endl;
 	sData = "Hello from server.";
+	
+    std::cout << "Press 'enter' to terminate" << std::endl;
     // Create our server
     SocketServer server(3000);    
-
+	
     // Need a thread to perform server operations
     ServerThread serverThread(server);
 	
