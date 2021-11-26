@@ -69,9 +69,14 @@ public:
     {
         // Cleanup
 	//...
-	for(int i = 0; i<threads.size(); i++){
-		Socket& terminate = threads[i]->GetSocket();
-		terminate.Close();
+	for(ClientThread* client : threads){
+		Socket& terminate = client->GetSocket();
+		//terminate.Read(data);
+		std::string stringer = "endtheclients";
+		ByteArray response = ByteArray(stringer);
+		terminate.Write(response);
+		
+		//terminate.Close();
 	}
     }
 
@@ -84,7 +89,7 @@ public:
         // A reference to this pointer 
         Socket& socketReference = *newConnection;
 	//You can use this to read data from socket and write data to socket. You may want to put this read/write somewhere else. You may use ByteArray
-	ClientThread* clientThread = new ClientThread(socketReference);
+	threads.push_back(new ClientThread(socketReference));
 	
 	}
 	return 1;

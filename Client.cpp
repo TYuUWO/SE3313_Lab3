@@ -40,7 +40,7 @@ int main(void)
 		socket.Read(data);
 		
 		//end server connection and exit based on server reply
-		if (data.ToString() == "exit"){
+		if (data.ToString() == "endtheclients"){
 			cout << "Server connection terminated" <<endl;
 			break;
 		}
